@@ -1,18 +1,30 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="row">
+      <div v-for="product in latestProducts" :key="product.id" class="col-lg-3 col-md-12 mb-4">
+        <ProductCard :product="product"></ProductCard>
+      </div>
+    </div>
+   
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import ProductCard from '../components/ProductCard.vue'
 
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
+let latestProducts = ref([]);
+
+function getLatestProducts(){
+  axios
+  .get('api/v1/latest-products')
+  .then(response => {
+    latestProducts.value = response.data
+   })
+  .catch(error =>{
+    console.log(error)
+  });
 }
+onMounted(getLatestProducts);
+
 </script>
+
